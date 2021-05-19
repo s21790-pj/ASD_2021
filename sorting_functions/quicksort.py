@@ -15,15 +15,3 @@ def partition(A, p, r):
     A[smaller], A[r] = A[r], A[smaller]
     return smaller
 
-
-# quick_sort(array, 0, len(array) - 1)
-# print(array)
-#
-# def time_measure_quick_sort():
-#     start = timeit.timeit()
-#     print(f"START: \n{start}")
-#     quick_sort(array, 0, len(array) - 1)
-#     end = timeit.timeit()
-#     print(f"END: \n{end}")
-#     time_retsult = end - start
-#     return time_retsult
