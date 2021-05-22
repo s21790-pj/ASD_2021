@@ -16,3 +16,5 @@ def partition(A, p, r):
     A[smaller], A[r] = A[r], A[smaller]
     return smaller
 
+
+
