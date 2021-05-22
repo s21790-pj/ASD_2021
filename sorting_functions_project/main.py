@@ -24,7 +24,7 @@ sum_heap_sort_time = 0
 sum_selection_sort_time = 0
 
 A_before_sort = []
-for num in range(50000):
+for num in range(5000):
     x = random.randint(0, 10)
     A_before_sort.append(x)
 
