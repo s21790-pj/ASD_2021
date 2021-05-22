@@ -17,61 +17,77 @@ quick_sort_sort_time = []
 heap_sort_sort_time = []
 selection_sort_sort_time = []
 
-for num in range(5):
-    A_before_sort = []
-    B_before_sort = []
-    C_before_sort = []
-    for num in range(10):
-        x = random.randint(0, 10)
-        A_before_sort.append(x)
-        B_before_sort.append(x)
-        C_before_sort.append(x)
+sum_quick_sort_time = 0
+sum_heap_sort_time = 0
+sum_selection_sort_time = 0
 
-    A_after_sort = A_before_sort.copy()
-    B_after_sort = B_before_sort.copy()
-    C_after_sort = C_before_sort.copy()
+A_before_sort = []
+for num in range(10):
+    x = random.randint(0, 10)
+    A_before_sort.append(x)
 
-    A_table_to_time_measure = A_before_sort.copy()
-    B_table_to_time_measure = B_before_sort.copy()
-    C_table_to_time_measure = C_before_sort.copy()
+A_after_sort = A_before_sort.copy()
+B_after_sort = A_before_sort.copy()
+C_after_sort = A_before_sort.copy()
 
-    quick_sort_sorted_table = quick_sort(A_after_sort, 0, len(A_after_sort) - 1)
-    heap_sort_sorted_table = heap_sort(B_after_sort)
-    selection_sort_sorted_table = selection_sort(C_after_sort)
+measure_time_quick_sort_unsorted, quick_sort_sorted_table = time_measure(quick_sort, A_after_sort, 0,
+                                                                         len(A_after_sort) - 1)
+measure_time_heap_sort_unsorted, heap_sort_sorted_table = time_measure(heap_sort, B_after_sort)
+measure_time_selection_sort_unsorted, selection_sort_sorted_table = time_measure(selection_sort, C_after_sort)
 
-    quick_sort_start, quick_sort_end, quick_sort_time = \
-        time_measure(quick_sort, A_table_to_time_measure, 0, len(A_table_to_time_measure) - 1)
-    heap_sort_start, heap_sort_end, heap_sort_time = time_measure(heap_sort, B_table_to_time_measure)
-    selection_sort_start, selection_sort_end, selection_sort_time = time_measure(selection_sort,
-                                                                                 C_table_to_time_measure)
+measure_time_quick_sort_sorted, _ = time_measure(quick_sort, quick_sort_sorted_table, 0, len(A_after_sort) - 1)
+measure_time_heap_sort_sorted, _ = time_measure(heap_sort, heap_sort_sorted_table)
+measure_time_selection_sort_sorted, _ = time_measure(selection_sort, selection_sort_sorted_table)
 
-    d = {
-        "quick_sort": pd.Series(
-            [A_before_sort, quick_sort_sorted_table, quick_sort_start, quick_sort_end, quick_sort_time],
-            index=["numbers", "sorted numbers", "start", "end", "sort time"]),
-        "heap_sort": pd.Series([B_before_sort, heap_sort_sorted_table, heap_sort_start, heap_sort_end, heap_sort_time],
-                               index=["numbers", "sorted numbers", "start", "end", "sort time"]),
-        "selection_sort": pd.Series(
-            [C_before_sort, selection_sort_sorted_table, selection_sort_start, selection_sort_end, selection_sort_time],
-            index=["numbers", "sorted numbers", "start", "end", "sort time"]),
-    }
-    quick_sort_sort_time.append(quick_sort_time)
-    heap_sort_sort_time.append(heap_sort_time)
-    selection_sort_sort_time.append(selection_sort_time)
-    print(pd.DataFrame(d))
+quick_sort_reverse_table = quick_sort_sorted_table.copy()
+heap_sort_reverse_table = heap_sort_sorted_table.copy()
+selection_sort_reverse_table = selection_sort_sorted_table.copy()
 
+quick_sort_reverse_table.reverse()
+heap_sort_reverse_table.reverse()
+selection_sort_reverse_table.reverse()
 
-import matplotlib.pyplot as plt
-import numpy as np
+measure_time_quick_sort_reverse_sorted, _ = time_measure(quick_sort, quick_sort_reverse_table, 0, len(A_after_sort) - 1)
+measure_time_heap_sort_reverse_sorted, _ = time_measure(heap_sort, heap_sort_reverse_table)
+measure_time_selection_sort_reverse_sorted, _ = time_measure(selection_sort, selection_sort_reverse_table)
 
-x = np.linspace(0, 0.0000010)
+d = {
+    "quick_sort": pd.Series(
+        [measure_time_quick_sort_unsorted, measure_time_quick_sort_sorted, measure_time_quick_sort_reverse_sorted],
+        index=["unsorted numbers sort time", "sorted numbers sort time", "reverse sorted numbers sort time"]),
+    "heap_sort": pd.Series(
+        [measure_time_heap_sort_unsorted, measure_time_heap_sort_sorted, measure_time_heap_sort_reverse_sorted],
+        index=["unsorted numbers sort time", "sorted numbers sort time", "reverse sorted numbers sort time"]),
+    "selection_sort": pd.Series(
+        [measure_time_selection_sort_unsorted, measure_time_selection_sort_sorted, measure_time_selection_sort_reverse_sorted],
+        index=["unsorted numbers sort time", "sorted numbers sort time", "reverse sorted numbers sort time"]),
+}
 
-plt.plot(quick_sort_sort_time, label="quick_sort")
-plt.plot(heap_sort_sort_time, label="heap_sort")
-plt.plot(selection_sort_sort_time, label="selection_sort")
-plt.ylabel("Time (s)")
-plt.xlabel("Number of sort")
-plt.legend()
+quick_sort_sort_time = [measure_time_quick_sort_unsorted, measure_time_quick_sort_sorted, measure_time_quick_sort_reverse_sorted]
+heap_sort_sort_time = [measure_time_heap_sort_unsorted, measure_time_heap_sort_sorted, measure_time_heap_sort_reverse_sorted]
+selection_sort_sort_time = [measure_time_selection_sort_unsorted, measure_time_selection_sort_sorted, measure_time_selection_sort_reverse_sorted]
 
+print(pd.DataFrame(d))
 
+names = ['unsorted', 'sorted', 'reverse sorted ']
+values = [1, 10, 100]
+
+plt.figure(figsize=(9, 3))
+plt.subplot(131)
+plt.scatter(names, quick_sort_sort_time)
+plt.ylabel('time (s)')
+plt.xlabel('quick sort')
+plt.axis([-0.1,2.1, 0, 0.00003])
+plt.subplot(132)
+plt.scatter(names, heap_sort_sort_time)
+plt.ylabel('time (s)')
+plt.xlabel('heap sort')
+plt.axis([-0.1,2.1, 0, 0.00003])
+plt.subplot(133)
+plt.scatter(names, selection_sort_sort_time)
+plt.ylabel('time (s)')
+plt.xlabel('selection sort')
+plt.axis([-0.1,2.1, 0, 0.00003])
+
+plt.suptitle('Sorted time')
 plt.show()
